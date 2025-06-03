@@ -1,25 +1,37 @@
-const express = require('express');
-const app = express()
+const express = require("express");
+let cors = require("cors");
+const session = require("express-session");
+const path = require("path");
+const dotenv = require("dotenv");
+require("colors");
 
-app.use((req, res, next) => {
-    console.log("My Middleware");
-    next()
-})
+const app = express();
 
-app.get('/', (req, res)=> {
-    res.send('Hello World!')
-})
+app.use(cors({ origin: true }));
 
-app.get('/contact', (req, res) => {
- res.send('<h1>Contact page</h1>');
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(
+  session({
+    secret: "your_secret_key_here",
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true },
+  })
+);
+app.use(express.static("public"))
+
+const pathToEnv = path.join(__dirname, "..", "config", ".env");
+
+dotenv.config({ path: pathToEnv });
+
+app.use((req, res) => {
+  res.status(404).json({ message: "Not found" });
 });
 
+app.use((err, req, res, next) => {
+  const { status = 500, message = "Server error" } = err;
+  res.status(status).json({ message });
+});
 
-
-app.listen(3000, ()=>{
-    console.log('Listening on port 3000');
-    
-})
-
-
-
+module.exports = app
