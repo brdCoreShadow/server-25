@@ -3,6 +3,7 @@ let cors = require("cors");
 const session = require("express-session");
 const path = require("path");
 const dotenv = require("dotenv");
+const { extensionsRoutes } = require("./routes");
 require("colors");
 
 const app = express();
@@ -24,6 +25,8 @@ app.use(express.static("public"))
 const pathToEnv = path.join(__dirname, "..", "config", ".env");
 
 dotenv.config({ path: pathToEnv });
+
+app.use("/extensions", extensionsRoutes)
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });

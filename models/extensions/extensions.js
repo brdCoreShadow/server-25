@@ -3,64 +3,38 @@ const Joi = require("joi");
 
 const { handleMongooseError } = require("../../utils");
 
-const schemaProject = Schema(
+const schemaExtensions = Schema(
   {
-    techStack: {
-      type: Array,
-      require: true,
-    },
-    title: {
+    name: {
       type: String,
       require: true,
     },
-    task: {
+    text: {
       type: String,
       require: true,
     },
-    liveUrl: {
+    pic: {
       type: String,
       require: true,
-    },
-    coverImage: {
-      type: String,
-    },
-    summary: {
-      type: String,
-      require: true,
-    },
-    preview: {
-      type: Array,
-     
-    },
-    difficulty: {
-      type: String,
-      enum: difficulties,
-      required: true,
     },
   },
   { versionKey: false, timestamps: true }
 );
 
-const projectPostSchema = Joi.object({
-  techStack: Joi.array().items(Joi.string().min(2)).min(3).required(),
-  title: Joi.string().min(3).required(),
-  task: Joi.string().min(10).required(),
-  liveUrl: Joi.string()
+const extensionsPostSchema = Joi.object({
+  name: Joi.string().min(3).required(),
+  text: Joi.string().min(10).required(),
+  pic: Joi.string()
     .uri({ scheme: ["http", "https"] })
-    .required(),
-  summary: Joi.string().min(10).required(),
-  preview: Joi.array().items(Joi.string().uri()),
-  difficulty: Joi.string()
-    .valid(...difficulties)
     .required(),
 });
 
-schemaProject.post("save", handleMongooseError);
+schemaExtensions.post("save", handleMongooseError);
 
 const schemas = {
-  projectPostSchema,
+  extensionsPostSchema,
 };
 
-const Projects = model("projects", schemaProject);
+const Extensions = model("extensions", schemaExtensions);
 
-module.exports = { Projects, schemas };
+module.exports = { Extensions, schemas };
