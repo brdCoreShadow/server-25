@@ -50,7 +50,7 @@ const updateCover = async (req, res) => {
       throw HttpError(404, "Not found");
     }
 
-    res.status(201).json({ data });
+    res.status(200).json({ data });
   } catch (error) {
     console.error(`Error: ${error.message}`);
     res.status(500).json({ error: "Internal Server Error" });
@@ -67,7 +67,7 @@ const updateProp = async (req, res) => {
     if (!result) {
       throw HttpError(404, "Not found");
     }
-    res.status(201).json({ state });
+    res.status(200).json({ state });
   } catch (error) {
     console.error(`Error: ${error.message}`);
     res.status(500).json({ error: "Internal Server Error" });
@@ -85,7 +85,7 @@ const removeOne = async (req, res) => {
     throw HttpError(404, "Not found");
   }
 
-  res.status(204).json({ message: `${_id} is removed successfully` }); // No content
+  res.status(204).json({ message: `${_id} is removed successfully` }); 
 };
 
 module.exports = {
