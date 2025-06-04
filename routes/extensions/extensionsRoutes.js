@@ -13,18 +13,18 @@ const extensionsRoutes = express.Router();
 extensionsRoutes.get("/", ctrlExtensions.getAll);
 
 extensionsRoutes.post(
-  "/extensions",
+  "/",
   validateBody(schemas.extensionsPostSchema),
   ctrlExtensions.addNew
 );
 
 extensionsRoutes.patch(
-  "/projects/cover",
+  "/:id",
   uploadCloud.single("coverImage"),
   ctrlExtensions.updateCover
 );
 
-extensionsRoutes.get("/:id", ctrlExtensions.removeOne);
+extensionsRoutes.get("/:_id", ctrlExtensions.removeOne);
 
 
 

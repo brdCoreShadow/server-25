@@ -18,18 +18,23 @@ const getAll = async ({ req, res }) => {
 const addNew = async (req, res) => {
   const { pic } = req.body;
 
-  const extension = await Extensions.create({ ...req.body });
-  if (!extension) {
-    throw HttpError(400, "Unable to save your data");
+  try {
+    const extension = await Extensions.create({ ...req.body });
+    if (!extension) {
+      throw HttpError(400, "Unable to save your data");
+    }
+
+    const coverUrl = gravatar.url(pic || "", { s: "200", r: "pg", d: "mm" });
+
+    res.status(201).json({
+      code: 201,
+      message: "Success",
+      data: { ...extension.toObject(), coverImage: coverUrl },
+    });
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  const coverUrl = gravatar.url(pic || '', { s: '200', r: 'pg', d: 'mm' });
-
-  res.status(201).json({
-    code: 201,
-    message: "Success",
-    data: { ...extension.toObject(), coverImage: coverUrl },
-  });
 };
 
 const updateCover = async (req, res) => {
@@ -50,15 +55,15 @@ const updateCover = async (req, res) => {
 };
 
 const removeOne = async (req, res) => {
-  const { id } = req.params;
+  const { _id } = req.params;
 
-  const result = await Extensions.findByIdAndDelete(id);
+  const result = await Extensions.findByIdAndDelete(_id);
 
   if (!result) {
     throw HttpError(404, "Not found");
   }
 
-  res.status(204).send(); // No content
+  res.status(204).send(`${_id} is removed successfully`); // No content
 };
 
 module.exports = {

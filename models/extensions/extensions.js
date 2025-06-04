@@ -12,21 +12,14 @@ const schemaExtensions = Schema(
     text: {
       type: String,
       require: true,
-    },
-    pic: {
-      type: String,
-      require: true,
-    },
+    }
   },
   { versionKey: false, timestamps: true }
 );
 
 const extensionsPostSchema = Joi.object({
   name: Joi.string().min(3).required(),
-  text: Joi.string().min(10).required(),
-  pic: Joi.string()
-    .uri({ scheme: ["http", "https"] })
-    .required(),
+  text: Joi.string().min(3).required(),
 });
 
 schemaExtensions.post("save", handleMongooseError);

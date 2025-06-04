@@ -1,6 +1,5 @@
 
 const mongoose = require("mongoose");
-const { Projects } = require("../models");
 
 const connectDB = async () => {
   try {
@@ -19,5 +18,6 @@ const connectDB = async () => {
     );
   }
 };
+
 
 module.exports = connectDB;
