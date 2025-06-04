@@ -16,14 +16,13 @@ extensionsRoutes.post(
 );
 
 extensionsRoutes.patch(
-  "/item/:_id",
+  "/:_id",
   uploadCloud.single("coverImage"),
   ctrlExtensions.updateCover
 );
 
 extensionsRoutes.patch(
-  "/:_id",
-  validateBody(schemas.extensionsPostSchema),
+  "/item/:_id",
   ctrlExtensions.updateProp
 );
 

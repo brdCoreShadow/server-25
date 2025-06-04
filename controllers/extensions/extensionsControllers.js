@@ -36,44 +36,44 @@ const addNew = async (req, res) => {
 };
 
 const updateCover = async (req, res) => {
-  const { _id } = req.params;
+  try {
+    const { _id } = req.params;
 
-  const data = req.file.path;
+    const data = req.file.path;
 
-  const result = await Extensions.findOneAndUpdate(
-    { _id },
-    { coverImage: data }
-  );
+    const result = await Extensions.findOneAndUpdate(
+      { _id },
+      { coverImage: data }
+    );
 
-  if (!result) {
-    throw HttpError(404, "Not found");
+    if (!result) {
+      throw HttpError(404, "Not found");
+    }
+
+    res.status(201).json({ data });
+  } catch (error) {
+    console.error(`Error: ${error.message}`);
+    res.status(500).json({ error: "Internal Server Error" });
   }
-
-  res.status(201).json({ data });
 };
 
 const updateProp = async (req, res) => {
   try {
     const { _id } = req.params;
-    const data = req.body;
+    const {state} = req.body;
 
-console.log(`id: ${_id}, data: ${data}`);
-
-
-    // const result = await Extensions.findOneAndUpdate(
-    //   { _id },
-    //   { coverImage: data }
-    // );
+    const result = await Extensions.findOneAndUpdate({ _id }, { state });
 
     if (!result) {
       throw HttpError(404, "Not found");
     }
+    res.status(201).json({ state });
   } catch (error) {
     console.error(`Error: ${error.message}`);
     res.status(500).json({ error: "Internal Server Error" });
   }
 
-  res.status(201).json({ data });
+  
 };
 
 const removeOne = async (req, res) => {
