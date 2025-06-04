@@ -14,6 +14,10 @@ const schemaExtensions = Schema(
       require: true,
     },
     coverImage: String,
+    state: {
+      type: String,
+      enum: ["active", "inactive"],
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -21,7 +25,8 @@ const schemaExtensions = Schema(
 const extensionsPostSchema = Joi.object({
   name: Joi.string().min(3).required(),
   text: Joi.string().min(3).required(),
-  String: Joi.string().min(3),
+  coverImage: Joi.string().min(3),
+  state: Joi.string().valid("active", "inactive"),
 });
 
 schemaExtensions.post("save", handleMongooseError);
