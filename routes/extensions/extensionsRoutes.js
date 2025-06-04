@@ -19,7 +19,7 @@ extensionsRoutes.post(
 );
 
 extensionsRoutes.patch(
-  "/:id",
+  "/:_id",
   uploadCloud.single("coverImage"),
   ctrlExtensions.updateCover
 );

@@ -38,12 +38,12 @@ const addNew = async (req, res) => {
 };
 
 const updateCover = async (req, res) => {
-  const { id } = req.body;
+  const { _id } = req.params;
 
   const data = req.file.path;
 
   const result = await Extensions.findOneAndUpdate(
-    { id },
+    { _id },
     { coverImage: data }
   );
 

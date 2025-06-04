@@ -12,7 +12,8 @@ const schemaExtensions = Schema(
     text: {
       type: String,
       require: true,
-    }
+    },
+    coverImage: String,
   },
   { versionKey: false, timestamps: true }
 );
@@ -20,6 +21,7 @@ const schemaExtensions = Schema(
 const extensionsPostSchema = Joi.object({
   name: Joi.string().min(3).required(),
   text: Joi.string().min(3).required(),
+  String: Joi.string().min(3),
 });
 
 schemaExtensions.post("save", handleMongooseError);
