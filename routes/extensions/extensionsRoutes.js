@@ -1,9 +1,6 @@
 const express = require("express");
 
-const {
-  validateBody,
-  uploadCloud,
-} = require("../../middleware/index");
+const { validateBody, uploadCloud } = require("../../middleware/index");
 const ctrlExtensions = require("../../controllers/extensions/extensionsControllers");
 
 const { schemas } = require("../../models/index");
@@ -25,7 +22,5 @@ extensionsRoutes.patch(
 );
 
 extensionsRoutes.get("/:_id", ctrlExtensions.removeOne);
-
-
 
 module.exports = extensionsRoutes;
