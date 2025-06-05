@@ -35,22 +35,36 @@ const addNew = async (req, res) => {
   }
 };
 
-const updateCover = async (req, res) => {
+const updateElement = async (req, res) => {
   try {
     const { _id } = req.params;
+    const { newState } = req.body || "active";
+    const data = req.file?.path;
 
-    const data = req.file.path;
+    let result;
 
-    const result = await Extensions.findOneAndUpdate(
-      { _id },
-      { coverImage: data }
-    );
+console.log(newState);
+
+
+    if (data) {
+      result = await Extensions.findOneAndUpdate(
+        { _id },
+        { coverImage: data },
+        { new: true }
+      );
+    } else {
+      result = await Extensions.findOneAndUpdate(
+        { _id },
+        { state: newState },
+        { new: true }
+      );
+    }
 
     if (!result) {
       throw HttpError(404, "Not found");
     }
 
-    res.status(200).json({ data });
+    res.status(200).json({ result });
   } catch (error) {
     console.error(`Error: ${error.message}`);
     res.status(500).json({ error: "Internal Server Error" });
@@ -92,6 +106,6 @@ module.exports = {
   getAll: ctrlWrapper(getAll),
   addNew: ctrlWrapper(addNew),
   removeOne: ctrlWrapper(removeOne),
-  updateCover: ctrlWrapper(updateCover),
+  updateElement: ctrlWrapper(updateElement),
   updateProp: ctrlWrapper(updateProp),
 };

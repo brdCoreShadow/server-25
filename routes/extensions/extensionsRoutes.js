@@ -18,8 +18,7 @@ extensionsRoutes.post(
 extensionsRoutes.patch(
   "/:_id",
   uploadCloud.single("coverImage"),
-  ctrlExtensions.updateCover
-);
+  ctrlExtensions.updateElement);
 
 extensionsRoutes.patch(
   "/item/:_id",
