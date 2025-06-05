@@ -4,12 +4,7 @@ const connectDB = async () => {
   try {
     mongoose.set("strictQuery", true);
     const db = await mongoose.connect(process.env.DB_URI);
-    
-    if (!db) {
-      throw new Error(
-        "Missing MongoDB connection string in environment variables"
-      );
-    }
+      
     console.log(
       `Successful connection to DB, name: ${db.connection.name} on port: ${db.connection.port}, on host: ${db.connection.host}`
         .bold.brightCyan.italic
