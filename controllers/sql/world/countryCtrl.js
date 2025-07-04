@@ -7,8 +7,8 @@ const getAllCountries = async () => {
 };
 
 // Get a single country by Code
-const getCountryByCode = async (code) => {
-  const [rows] = await pool.query("SELECT * FROM country WHERE Code = ?", [code]);
+const getCountryByName = async (name) => {
+  const [rows] = await pool.query("SELECT * FROM country WHERE Name = ?", [name]);
   return rows[0];
 };
 
@@ -62,6 +62,6 @@ const createCountry = async (country) => {
 
 module.exports = {
   getAllCountries,
-  getCountryByCode,
+  getCountryByName,
   createCountry,
 };

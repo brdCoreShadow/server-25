@@ -32,8 +32,10 @@ router.get("/", async (req, res) => {
 });
 
 // GET /countries/:code
-router.get("/:code", async (req, res) => {
-  const country = await countryModel.getCountryByCode(req.params.code);
+router.get("/:name", async (req, res) => {
+  console.log(req.params.name);
+  
+  const country = await countryModel.getCountryByName(req.params.name);
   if (!country) return res.status(404).json({ message: "Not found" });
   res.json(country);
 });
