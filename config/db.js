@@ -1,4 +1,6 @@
 const mongoose = require("mongoose");
+const mysql = require('mysql2/promise');
+require('dotenv').config();
 
 const connectDB = async () => {
   try {
@@ -15,5 +17,7 @@ const connectDB = async () => {
     );
   }
 };
+
+
 
 module.exports = connectDB;

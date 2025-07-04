@@ -4,6 +4,8 @@ const session = require("express-session");
 const path = require("path");
 const dotenv = require("dotenv");
 const { extensionsRoutes } = require("./routes");
+const countriesRoutes = require("./routes/sql/world/countriesRoutes");
+
 require("colors");
 
 const app = express();
@@ -27,6 +29,8 @@ const pathToEnv = path.join(__dirname, "..", "config", ".env");
 dotenv.config({ path: pathToEnv });
 
 app.use("/extensions", extensionsRoutes)
+app.use("/countries", countriesRoutes);
+
 
 app.use((req, res) => {
   res.status(404).json({ message: "Not found" });
