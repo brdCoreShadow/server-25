@@ -3,8 +3,7 @@ let cors = require("cors");
 const session = require("express-session");
 const path = require("path");
 const dotenv = require("dotenv");
-const { extensionsRoutes } = require("./routes");
-const countriesRoutes = require("./routes/sql/world/countriesRoutes");
+const dessertRoutes = require('./routes/desserts/dessertsRoutes');
 
 require("colors");
 
@@ -28,8 +27,12 @@ const pathToEnv = path.join(__dirname, "..", "config", ".env");
 
 dotenv.config({ path: pathToEnv });
 
-app.use("/extensions", extensionsRoutes)
-app.use("/countries", countriesRoutes);
+app.use((req, res, next) => {
+  console.log(`Received ${req.method} request for ${req.url}`);
+  next();
+});
+app.use("/desserts", dessertRoutes);
+console.log("✅ Desserts route mounted at /desserts");
 
 
 app.use((req, res) => {
