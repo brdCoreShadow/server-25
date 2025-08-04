@@ -1,24 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const Joi = require("joi");
 const dessertsModel = require("../../controllers/desserts_junior/desserts_junior");
+const dessertSchema  = require('../../models/dessert_junior/dessertSchema');
 
-// Joi schema for a dessert
-const dessertSchema = Joi.object({
-  name: Joi.string().max(100).required(),
-  category_id: Joi.number().integer().required(),
-  price: Joi.number().precision(2).required(),
-  description: Joi.string().max(255).allow(null, ""),
-  image_url: Joi.string().uri().allow(null, "")
-});
-
-// GET /desserts
 router.get("/", async (req, res) => {
   try {
-    console.log("I'm here");
-
     const desserts = await dessertsModel.getAllDesserts();
-    console.log("GET /desserts route hit", desserts);
     res.json(desserts);
   } catch (err) {
     console.error("Error fetching desserts:", err);
@@ -26,7 +13,27 @@ router.get("/", async (req, res) => {
   }
 });
 
-// POST /desserts
+router.get("/name/:value", async (req, res) => {
+  try {
+    const desserts = await dessertsModel.getDessertsByParam("name", req.params.value);
+    res.json(desserts);
+  } catch (err) {
+    console.error("Error fetching desserts by name:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/category/:value", async (req, res) => {
+  try {
+    const desserts = await dessertsModel.getDessertsByParam("category", req.params.value);
+    res.json(desserts);
+  } catch (err) {
+    console.error("Error fetching desserts by category:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
 router.post("/", async (req, res) => {
   try {
     const { error, value } = dessertSchema.validate(req.body);

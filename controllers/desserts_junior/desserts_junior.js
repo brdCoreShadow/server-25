@@ -1,6 +1,5 @@
 const pool = require('../../config/dbSql');
 
-// Get all desserts
 const getAllDesserts = async () => {
   const [rows] = await pool.query(`
     SELECT d.dessert_id, d.name, d.price, d.description, d.image_url, c.name AS category
@@ -11,7 +10,33 @@ const getAllDesserts = async () => {
   return rows;
 };
 
-// Create a new dessert
+const getDessertsByParam = async (type, value) => {
+  let query = `
+    SELECT d.dessert_id, d.name, d.price, d.description, d.image_url, c.name AS category
+    FROM desserts d
+    JOIN categories c ON d.category_id = c.category_id
+  `;
+  const params = [];
+
+  if (type === "name") {
+    query += " WHERE d.name LIKE ?";
+    params.push(`%${value}%`);
+  } else if (type === "category") {
+    query += " WHERE c.name = ?";
+    params.push(value);
+  } else {
+    throw new Error("Invalid filter type");
+  }
+
+  query += " ORDER BY d.name ASC";
+
+  const [rows] = await pool.query(query, params);
+  return rows;
+};
+
+
+
+
 const createDessert = async (dessert) => {
     
   const [result] = await pool.query(
@@ -26,4 +51,5 @@ const createDessert = async (dessert) => {
 module.exports = {
   getAllDesserts,
   createDessert,
+  getDessertsByParam
 };
