@@ -33,6 +33,21 @@ router.get("/category/:value", async (req, res) => {
   }
 });
 
+router.get("/id/:value", async (req, res) => {
+  try {
+    const dessert = await dessertsModel.getDessertsByParam("id", req.params.value);
+
+    if (!dessert) {
+      return res.status(404).json({ message: "Dessert not found" });
+    }
+
+    res.json(dessert);
+  } catch (err) {
+    console.error("Error fetching dessert by ID:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 
 router.post("/", async (req, res) => {
   try {

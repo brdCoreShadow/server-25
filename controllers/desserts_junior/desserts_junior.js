@@ -18,7 +18,10 @@ const getDessertsByParam = async (type, value) => {
   `;
   const params = [];
 
-  if (type === "name") {
+  if (type === "id") {
+    query += " WHERE d.dessert_id = ?";
+    params.push(value);
+  } else if (type === "name") {
     query += " WHERE d.name LIKE ?";
     params.push(`%${value}%`);
   } else if (type === "category") {
@@ -31,8 +34,14 @@ const getDessertsByParam = async (type, value) => {
   query += " ORDER BY d.name ASC";
 
   const [rows] = await pool.query(query, params);
-  return rows;
+
+  if (type === "id") {
+    return rows[0] || null; 
+  }
+  return rows; 
 };
+
+
 
 
 
