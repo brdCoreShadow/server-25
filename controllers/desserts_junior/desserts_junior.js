@@ -1,4 +1,4 @@
-const pool = require('../../config/dbSql');
+const pool = require("../../config/dbSql");
 
 const getAllDesserts = async () => {
   const [rows] = await pool.query(`
@@ -36,29 +36,70 @@ const getDessertsByParam = async (type, value) => {
   const [rows] = await pool.query(query, params);
 
   if (type === "id") {
-    return rows[0] || null; 
+    return rows[0] || null;
   }
-  return rows; 
+  return rows;
 };
 
-
-
-
-
-
 const createDessert = async (dessert) => {
-    
   const [result] = await pool.query(
     `INSERT INTO desserts (name, category_id, price, description, image_url)
      VALUES (?, ?, ?, ?, ?)`,
-    [dessert.name, dessert.category_id, dessert.price, dessert.description, dessert.image_url]
+    [
+      dessert.name,
+      dessert.category_id,
+      dessert.price,
+      dessert.description,
+      dessert.image_url,
+    ]
   );
 
   return { id: result.insertId, ...dessert };
 };
 
+const updateDessert = async (id, updates) => {
+  
+  const fields = [];
+  const values = [];
+
+  if (updates.name !== undefined) {
+    fields.push("name = ?");
+    values.push(updates.name);
+  }
+  if (updates.category_id !== undefined) {
+    fields.push("category_id = ?");
+    values.push(updates.category_id);
+  }
+  if (updates.price !== undefined) {
+    fields.push("price = ?");
+    values.push(updates.price);
+  }
+  if (updates.description !== undefined) {
+    fields.push("description = ?");
+    values.push(updates.description);
+  }
+  if (updates.image_url !== undefined) {
+    fields.push("image_url = ?");
+    values.push(updates.image_url);
+  }
+
+  if (fields.length === 0) {
+    throw new Error("No valid fields provided for update");
+  }
+
+  values.push(id); 
+
+  const [result] = await pool.query(
+    `UPDATE desserts SET ${fields.join(", ")} WHERE dessert_id = ?`,
+    values
+  );
+
+  return result.affectedRows > 0;
+};
+
 module.exports = {
   getAllDesserts,
   createDessert,
-  getDessertsByParam
+  getDessertsByParam,
+  updateDessert
 };

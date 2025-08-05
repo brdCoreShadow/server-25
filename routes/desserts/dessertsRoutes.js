@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const dessertsModel = require("../../controllers/desserts_junior/desserts_junior");
-const dessertSchema  = require('../../models/dessert_junior/dessertSchema');
+const {dessertSchema, dessertPatchSchema}  = require('../../models/dessert_junior/dessertSchema');
+
 
 router.get("/", async (req, res) => {
   try {
@@ -58,6 +59,28 @@ router.post("/", async (req, res) => {
     res.status(201).json(newDessert);
   } catch (err) {
     console.error("Error adding dessert:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.patch("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    const { error, value } = dessertPatchSchema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ error: error.details[0].message });
+    }
+
+    const success = await dessertsModel.updateDessert(id, value);
+
+    if (!success) {
+      return res.status(404).json({ message: "Dessert not found or not updated" });
+    }
+
+    res.json({ message: "Dessert updated successfully" });
+  } catch (err) {
+    console.error("Error updating dessert:", err);
     res.status(500).json({ message: "Server error" });
   }
 });
