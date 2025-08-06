@@ -1,14 +1,29 @@
 const pool = require("../../config/dbSql");
 
-const getAllDesserts = async () => {
+const getAllDesserts = async (page = 1, limit = 9) => {
+  const offset = (page - 1) * limit;
+
   const [rows] = await pool.query(`
     SELECT d.dessert_id, d.name, d.price, d.description, d.image_url, c.name AS category
     FROM desserts d
     JOIN categories c ON d.category_id = c.category_id
     ORDER BY d.name ASC
+    LIMIT ? OFFSET ?
+  `, [limit, offset]);
+
+  // get total count for pagination info
+  const [[{ total }]] = await pool.query(`
+    SELECT COUNT(*) AS total FROM desserts
   `);
-  return rows;
+
+  return {
+    total,
+    page,
+    pages: Math.ceil(total / limit),
+    data: rows
+  };
 };
+
 
 const getDessertsByParam = async (type, value) => {
   let query = `
@@ -97,9 +112,18 @@ const updateDessert = async (id, updates) => {
   return result.affectedRows > 0;
 };
 
+const deleteDessert = async (id) => {
+  const [result] = await pool.query(
+    `DELETE FROM desserts WHERE dessert_id = ?`,
+    [id]
+  );
+  return result.affectedRows > 0;
+};
+
 module.exports = {
   getAllDesserts,
   createDessert,
   getDessertsByParam,
-  updateDessert
+  updateDessert,
+  deleteDessert
 };

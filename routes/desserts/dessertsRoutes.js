@@ -85,4 +85,20 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+router.delete("/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const success = await dessertsModel.deleteDessert(id);
+
+    if (!success) {
+      return res.status(404).json({ message: "Dessert not found" });
+    }
+
+    res.json({ message: "Dessert deleted successfully" });
+  } catch (err) {
+    console.error("Error deleting dessert:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
 module.exports = router;
