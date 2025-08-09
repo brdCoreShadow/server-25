@@ -4,6 +4,7 @@ const session = require("express-session");
 const path = require("path");
 const dotenv = require("dotenv");
 const dessertRoutes = require('./routes/desserts/dessertsRoutes');
+const timeTrackerRoutes = require('./routes/time-tracking-junior/time-tracking-juniorRoutes');
 
 require("colors");
 
@@ -22,6 +23,7 @@ app.use(
   })
 );
 app.use(express.static("public"))
+app.use("/images", express.static("uploads"));
 
 const pathToEnv = path.join(__dirname, "..", "config", ".env");
 
@@ -33,6 +35,9 @@ app.use((req, res, next) => {
 });
 app.use("/desserts", dessertRoutes);
 console.log("✅ Desserts route mounted at /desserts");
+
+app.use("/time-tracker", timeTrackerRoutes)
+console.log("✅ Time tracker route mounted at /time-tracker");
 
 
 app.use((req, res) => {

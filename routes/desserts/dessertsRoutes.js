@@ -1,12 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const dessertsModel = require("../../controllers/desserts_junior/desserts_junior");
-const {dessertSchema, dessertPatchSchema}  = require('../../models/dessert_junior/dessertSchema');
-
+const {
+  dessertSchema,
+  dessertPatchSchema,
+} = require("../../models/dessert_junior/dessertSchema");
+const upload = require('../../middleware/uploadMiddleware');
 
 router.get("/", async (req, res) => {
   try {
-    const desserts = await dessertsModel.getAllDesserts();
+    const page = parseInt(req.query.page, 10) || 1;
+    const desserts = await dessertsModel.getAllDesserts(page);
     res.json(desserts);
   } catch (err) {
     console.error("Error fetching desserts:", err);
@@ -16,7 +20,10 @@ router.get("/", async (req, res) => {
 
 router.get("/name/:value", async (req, res) => {
   try {
-    const desserts = await dessertsModel.getDessertsByParam("name", req.params.value);
+    const desserts = await dessertsModel.getDessertsByParam(
+      "name",
+      req.params.value
+    );
     res.json(desserts);
   } catch (err) {
     console.error("Error fetching desserts by name:", err);
@@ -26,7 +33,10 @@ router.get("/name/:value", async (req, res) => {
 
 router.get("/category/:value", async (req, res) => {
   try {
-    const desserts = await dessertsModel.getDessertsByParam("category", req.params.value);
+    const desserts = await dessertsModel.getDessertsByParam(
+      "category",
+      req.params.value
+    );
     res.json(desserts);
   } catch (err) {
     console.error("Error fetching desserts by category:", err);
@@ -36,7 +46,10 @@ router.get("/category/:value", async (req, res) => {
 
 router.get("/id/:value", async (req, res) => {
   try {
-    const dessert = await dessertsModel.getDessertsByParam("id", req.params.value);
+    const dessert = await dessertsModel.getDessertsByParam(
+      "id",
+      req.params.value
+    );
 
     if (!dessert) {
       return res.status(404).json({ message: "Dessert not found" });
@@ -48,7 +61,6 @@ router.get("/id/:value", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-
 
 router.post("/", async (req, res) => {
   try {
@@ -63,11 +75,19 @@ router.post("/", async (req, res) => {
   }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", upload.single("image"), async (req, res) => {
   try {
     const id = req.params.id;
 
-    const { error, value } = dessertPatchSchema.validate(req.body);
+    // Merge body and file info into one update object
+  const updates = {
+  ...req.body,
+  ...(req.file ? { image_url: req.file.path } : {}),
+};
+
+    console.log(req.body);
+    console.log("updates: ", updates)
+    const { error, value } = dessertPatchSchema.validate(updates);
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
@@ -75,7 +95,9 @@ router.patch("/:id", async (req, res) => {
     const success = await dessertsModel.updateDessert(id, value);
 
     if (!success) {
-      return res.status(404).json({ message: "Dessert not found or not updated" });
+      return res
+        .status(404)
+        .json({ message: "Dessert not found or not updated" });
     }
 
     res.json({ message: "Dessert updated successfully" });

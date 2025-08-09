@@ -2,6 +2,7 @@ const pool = require("../../config/dbSql");
 
 const getAllDesserts = async (page = 1, limit = 9) => {
   const offset = (page - 1) * limit;
+console.log(page);
 
   const [rows] = await pool.query(`
     SELECT d.dessert_id, d.name, d.price, d.description, d.image_url, c.name AS category
@@ -73,36 +74,28 @@ const createDessert = async (dessert) => {
 };
 
 const updateDessert = async (id, updates) => {
-  
+  const allowedFields = [
+    "name",
+    "category_id",
+    "price",
+    "description",
+    "image_url"
+  ];
   const fields = [];
   const values = [];
 
-  if (updates.name !== undefined) {
-    fields.push("name = ?");
-    values.push(updates.name);
-  }
-  if (updates.category_id !== undefined) {
-    fields.push("category_id = ?");
-    values.push(updates.category_id);
-  }
-  if (updates.price !== undefined) {
-    fields.push("price = ?");
-    values.push(updates.price);
-  }
-  if (updates.description !== undefined) {
-    fields.push("description = ?");
-    values.push(updates.description);
-  }
-  if (updates.image_url !== undefined) {
-    fields.push("image_url = ?");
-    values.push(updates.image_url);
+  for (const key of allowedFields) {
+    if (updates[key] !== undefined) {
+      fields.push(`${key} = ?`);
+      values.push(updates[key]);
+    }
   }
 
   if (fields.length === 0) {
     throw new Error("No valid fields provided for update");
   }
 
-  values.push(id); 
+  values.push(id); // for WHERE clause
 
   const [result] = await pool.query(
     `UPDATE desserts SET ${fields.join(", ")} WHERE dessert_id = ?`,

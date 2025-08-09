@@ -5,7 +5,7 @@ const dessertSchema = Joi.object({
   category_id: Joi.number().integer().required(),
   price: Joi.number().precision(2).required(),
   description: Joi.string().max(255).allow(null, ""),
-  image_url: Joi.string().uri().optional().allow(null, "")
+  image_url: Joi.string(),
 });
 
 const dessertPatchSchema = Joi.object({
@@ -13,7 +13,7 @@ const dessertPatchSchema = Joi.object({
   category_id: Joi.number().integer(),
   price: Joi.number().precision(2),
   description: Joi.string().max(255).allow(null, ""),
-  image_url: Joi.string().uri().optional().allow(null, "")
+  image_url: Joi.string(),
 }).min(1);
 
 module.exports = { dessertSchema, dessertPatchSchema };
